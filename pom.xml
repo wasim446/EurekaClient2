@@ -88,6 +88,19 @@
 			</plugin>
 		</plugins>
 		<finalName>EurekaClient2</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<!-- Add other resource file types if needed -->
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+			</resource>
+		</resources>
 	</build>
 
 </project>

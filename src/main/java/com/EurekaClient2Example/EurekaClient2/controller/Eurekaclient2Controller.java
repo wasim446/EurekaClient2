@@ -2,6 +2,8 @@ package com.EurekaClient2Example.EurekaClient2.controller;
 
 import com.EurekaClient2Example.EurekaClient2.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.core.env.Environment;
+import org.springframework.web.client.RestTemplate;
 
 
 @RestController
@@ -18,6 +21,11 @@ public class Eurekaclient2Controller {
     @Autowired
     Environment environment;
     private static List productList = new ArrayList<>();
+
+    @Autowired
+    private LoadBalancerClient loadBalancerClient;
+    private RestTemplate restTemplate = new RestTemplate();
+
     static{
         productList = new ArrayList<>();
         Product p1 = new Product(UUID.randomUUID(), "Guitar" , 99.99, "Music");
@@ -59,5 +67,19 @@ public class Eurekaclient2Controller {
     @DeleteMapping(value = "/product/delete/{id}")
     public void delete(@PathVariable UUID id) {
         //log "Product "+ id +" has been deleted successfully!";
+    }
+    @GetMapping("/callEurekaClient1viaClient2")
+    public ResponseEntity callClient2(){
+        try {
+            return new ResponseEntity(
+                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/calleurekaclient1", String.class), HttpStatus.OK);
+        }catch (Exception exp) {
+            return new ResponseEntity(
+                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/calleurekaclient1", String.class), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    private String getEurkaClient1BaseUri(){
+        ServiceInstance serviceInstance =  loadBalancerClient.choose("EUREKA-CLIENT1");
+        return serviceInstance.getUri().toString();
     }
 }
