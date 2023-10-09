@@ -72,10 +72,10 @@ public class Eurekaclient2Controller {
     public ResponseEntity callClient2(){
         try {
             return new ResponseEntity(
-                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/calleurekaclient1", String.class), HttpStatus.OK);
+                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/eurekaclientone", String.class), HttpStatus.OK);
         }catch (Exception exp) {
             return new ResponseEntity(
-                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/calleurekaclient1", String.class), HttpStatus.INTERNAL_SERVER_ERROR);
+                    restTemplate.getForObject(getEurkaClient1BaseUri() + "/employee/eurekaclientone", String.class), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     private String getEurkaClient1BaseUri(){
